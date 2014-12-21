@@ -1,0 +1,22 @@
+services:
+    nbrb_exchange_rates.api_client:
+        class: Submarine\NbrbExchangeRatesBundle\Provider\ApiClient
+        calls:
+            - [setUrlExchangeRates, [%submarine_nbrb_exchange_rates.source.url_exchange_rates%]]
+            - [setUrlExchangeRatesDynamic, [%submarine_nbrb_exchange_rates.source.url_exchange_rates_dynamic%]]
+
+
+    nbrb_exchange_rates.provider:
+        class: Submarine\NbrbExchangeRatesBundle\Provider\ExchangeRatesProvider
+        calls:
+            - [setApiClient, [@nbrb_exchange_rates.api_client]]
+            - [setCacheProvider, [@nbrb_exchange_rates.cacher]]
+            - [setCacheEnabled, [%submarine_nbrb_exchange_rates.cache.enable%]]
+            - [setCacheLifeTime, [%submarine_nbrb_exchange_rates.cache.lifetime%]]
+            - [setShowExceptions, [%submarine_nbrb_exchange_rates.exception%]]
+            - [setScaledName, [%submarine_nbrb_exchange_rates.scaled_name%]]
+
+
+    nbrb_exchange_rates.cacher:
+        class: Doctrine\Common\Cache\FilesystemCache
+        arguments: [%submarine_nbrb_exchange_rates.cache.dir%]

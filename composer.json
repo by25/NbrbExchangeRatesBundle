@@ -1,0 +1,23 @@
+{
+    "name": "submarine/nbrb-exchange-rates-bundle",
+    "type": "symfony-bundle",
+    "description": "Парсер официальных курсов валют Национального банка Республики Беларусь",
+    "homepage": "https://github.com/by25/NbrbExchangeRatesBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrey Kulikovsky",
+            "homepage": "http://itmedia.by/"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle": "~4.0",
+        "doctrine/cache": "1.4.*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Submarine\\NbrbExchangeRatesBundle\\": ""
+        }
+    }
+}
