@@ -53,7 +53,7 @@ public function registerBundles()
 # Значения по умолчанию
 submarine_nbrb_exchange_rates:
     cache:
-        enable: true                    # Включенить кэш
+        enable: true                    # Включить кэш
         dir: %kernel.cache_dir%/file    # Директория для файлового кэша
         lifetime: 10800                 # Время жизни кэша в секундах
     source:                             # Урлы xml-данных
