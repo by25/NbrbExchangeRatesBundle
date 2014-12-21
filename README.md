@@ -25,7 +25,7 @@
         }
     ],
     "require": {
-        "submarine/nbrb-exchange-rates-bundle": "@dev",
+        "submarine/nbrb-exchange-rates-bundle": "~0.1",
     }
 }
 ```
