@@ -18,14 +18,8 @@
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/by25/NbrbExchangeRatesBundle"
-        }
-    ],
     "require": {
-        "submarine/nbrb-exchange-rates-bundle": "~0.1",
+        "submarine/nbrb-exchange-rates-bundle": "~0.1"
     }
 }
 ```
