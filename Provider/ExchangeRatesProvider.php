@@ -56,7 +56,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
         }
 
         try {
-            $body = $this->apiClient->getXmlExchangesRates($date, true);
+            $body = $this->apiClient->getXmlExchangesRates($date, false);
             $xml = simplexml_load_string($body);
 
             $result = [];

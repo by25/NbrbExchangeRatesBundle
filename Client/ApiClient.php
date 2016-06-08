@@ -81,7 +81,7 @@ class ApiClient
      *
      * @return string
      */
-    public function getXmlExchangesRates(\DateTime $date, $quotName = true)
+    public function getXmlExchangesRates(\DateTime $date, $quotName = false)
     {
 
         $query = [

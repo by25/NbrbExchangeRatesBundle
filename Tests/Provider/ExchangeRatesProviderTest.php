@@ -18,7 +18,7 @@ class ExchangeRatesProviderTest extends \PHPUnit_Framework_TestCase
     private function getProvider()
     {
         $apiClient = new ApiClient(ApiClientTest::URL_RATES, ApiClientTest::URL_RATES_DYNAMIC, 3, 3);
-        return new ExchangeRatesProvider($apiClient, true, false);
+        return new ExchangeRatesProvider($apiClient, true);
     }
 
 
