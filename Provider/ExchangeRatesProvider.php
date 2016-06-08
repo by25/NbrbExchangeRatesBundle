@@ -17,11 +17,6 @@ use Submarine\NbrbExchangeRatesBundle\ExchangeRate;
 class ExchangeRatesProvider implements ExchangeRatesProviderInterface
 {
 
-    /**
-     * Наименование валюты, содержащее номинал
-     * @var bool
-     */
-    private $scaledName = true;
 
     /**
      * Выкидывать исключения?
@@ -39,13 +34,11 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
      * ExchangeRatesProvider constructor.
      * @param ApiClient $apiClient
      * @param bool $showExceptions
-     * @param bool $scaledName
      */
-    public function __construct(ApiClient $apiClient, $showExceptions, $scaledName)
+    public function __construct(ApiClient $apiClient, $showExceptions)
     {
         $this->apiClient = $apiClient;
         $this->showExceptions = $showExceptions;
-        $this->scaledName = $scaledName;
     }
 
 
@@ -63,7 +56,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
         }
 
         try {
-            $body = $this->apiClient->getXmlExchangesRates($date, $this->scaledName);
+            $body = $this->apiClient->getXmlExchangesRates($date, true);
             $xml = simplexml_load_string($body);
 
             $result = [];

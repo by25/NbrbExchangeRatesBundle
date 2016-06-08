@@ -43,7 +43,6 @@ class Configuration implements ConfigurationInterface
                     ->end()
 
                     ->booleanNode('exception')->defaultFalse()->end()
-                    ->booleanNode('scaled_name')->defaultFalse()->end()
 
                 ->end();
 

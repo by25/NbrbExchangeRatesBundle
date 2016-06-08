@@ -12,10 +12,5 @@ services:
         class: Submarine\NbrbExchangeRatesBundle\Provider\ExchangeRatesProvider
         arguments:
             - '@nbrb_exchange_rates.api_client'
+            - '%submarine_nbrb_exchange_rates.exception%'
 
-
-
-
-    nbrb_exchange_rates.cacher:
-        class: Doctrine\Common\Cache\FilesystemCache
-        arguments: ['%submarine_nbrb_exchange_rates.cache.dir%']

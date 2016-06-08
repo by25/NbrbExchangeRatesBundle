@@ -53,7 +53,6 @@ submarine_nbrb_exchange_rates:
         connect_timeout: 3              # Ожидание подключения к сервису, сек (default: 3)
         timeout: 3                      # Ожидание ответа сервера, сек (default: 3)
     exception: false                    # Выкидывать исключения?
-    scaled_name: false                  # Имя валюты в виде: true => "1 доллар США", false => "Доллар США"
 ```
 
 
