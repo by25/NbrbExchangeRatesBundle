@@ -96,3 +96,29 @@ $container->get('nbrb_exchange_rates.provider')
         new \DateTime('2014-05-01')
     );
 ```
+
+### Кэширование
+
+Можно воспользоваться декоратором `CachedExchangeRateProvider` в своем приложении.
+Кэш-провайдер должен реализовывать интерефейс `Doctrine\Common\Cache\Cache`, смотрите `doctrine/cache`.
+Пример конфигурации `service.yml`:
+
+```yaml
+    my_nbrb_exchange_rates_cached:
+        class: Submarine\NbrbExchangeRatesBundle\Provider\CachedExchangeRateProvider
+        arguments:
+            - '@nbrb_exchange_rates.provider'
+            - '@cache_filesystem'
+            - 10800
+
+    cache_filesystem:
+        class: Doctrine\Common\Cache\FilesystemCache
+        arguments: ['%kernel.cache_dir%/file']
+```
+
+```php
+$provider =  $container->get('my_nbrb_exchange_rates_cached');
+
+// Выбранные валюты
+$data = $provider->getRatesExchanges(['UAH', 'USD', 'EUR'], new \DateTime());
+```

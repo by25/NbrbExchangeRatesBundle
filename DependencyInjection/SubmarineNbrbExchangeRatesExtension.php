@@ -52,10 +52,5 @@ class SubmarineNbrbExchangeRatesExtension extends Extension
             $config['exception']
         );
 
-        $container->setParameter(
-            'submarine_nbrb_exchange_rates.scaled_name',
-            $config['scaled_name']
-        );
-
     }
 }
