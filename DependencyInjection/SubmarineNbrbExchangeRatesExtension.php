@@ -25,22 +25,6 @@ class SubmarineNbrbExchangeRatesExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-
-        //Cache
-        $container->setParameter(
-            'submarine_nbrb_exchange_rates.cache.enable',
-            $config['cache']['enable']
-        );
-        $container->setParameter(
-            'submarine_nbrb_exchange_rates.cache.dir',
-            $config['cache']['dir']
-        );
-        $container->setParameter(
-            'submarine_nbrb_exchange_rates.cache.lifetime',
-            $config['cache']['lifetime']
-        );
-
-
         // Source
         $container->setParameter(
             'submarine_nbrb_exchange_rates.source.url_exchange_rates',

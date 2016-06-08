@@ -3,7 +3,8 @@
 
 Парсер официальных курсов валют Национального банка Республики Беларусь ([Источник данных](http://www.nbrb.by/statistics/Rates/XML/))
 
-## Возможности:
+Возможности:
+------------
 
 - Получение курсов валют по коду валюты (UAH, USD).
 - Получение динамики официального курса белорусского рубля к заданной валюте периодом не более чем за 365 дней.
@@ -11,10 +12,10 @@
 - Кэширование данных (файловый кэш)
 
 
-## Установка
-### Composer
+Установка
+---------
 
-В composer.json:
+composer.json:
 
 ```json
 {
@@ -26,7 +27,7 @@
 
 
 
-### Регистрация бандла:
+Регистрация бандла:
 
 ```php
 <?php
@@ -41,24 +42,23 @@ public function registerBundles()
 }
 ```
 
-### Конфигурация
+Конфигурация `config.yml`
 
-```yml
+```yaml
 # Значения по умолчанию
 submarine_nbrb_exchange_rates:
-    cache:
-        enable: true                    # Включить кэш
-        dir: %kernel.cache_dir%/file    # Директория для файлового кэша
-        lifetime: 10800                 # Время жизни кэша в секундах
     source:                             # Урлы xml-данных
         url_exchange_rates: 'http://www.nbrb.by/Services/XmlExRates.aspx'
         url_exchange_rates_dynamic: 'http://www.nbrb.by/Services/XmlExRatesDyn.aspx'
+        connect_timeout: 3              # Ожидание подключения к сервису, сек (default: 3)
+        timeout: 3                      # Ожидание ответа сервера, сек (default: 3)
     exception: false                    # Выкидывать исключения?
     scaled_name: false                  # Имя валюты в виде: true => "1 доллар США", false => "Доллар США"
 ```
 
 
-## Использование
+Использование
+-------------
 
 ### Получение текущего курса
 
@@ -71,12 +71,17 @@ $data = $container->get('nbrb_exchange_rates.provider')
 Несколько валют:
 
 ```php
+
+$provider =  $container->get('nbrb_exchange_rates.provider');
+
 // Выбранные валюты
-$data = $container->get('nbrb_exchange_rates.provider')
-    ->getRatesExchanges(['UAH', 'USD', 'EUR'], new \DateTime());
+$data = $provider->getRatesExchanges(['UAH', 'USD', 'EUR'], new \DateTime());
+
 // Все валюты
-$data = $container->get('nbrb_exchange_rates.provider')
-    ->getAllRatesExchanges(new \DateTime());
+$data = $provider->getAllRatesExchanges(new \DateTime());
+
+// Одна валюта
+$rate = $provider->getRateExchange('USD', new \DateTime('2014-01-01'));
 ```
 
 
