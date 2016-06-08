@@ -54,8 +54,7 @@ submarine_nbrb_exchange_rates:
         url_exchange_rates: 'http://www.nbrb.by/Services/XmlExRates.aspx'
         url_exchange_rates_dynamic: 'http://www.nbrb.by/Services/XmlExRatesDyn.aspx'
     exception: false                    # Выкидывать исключения?
-    scaled_name: false                  # Имя валюты в виде "1 доллар США" (true) 
-                                        #или "Доллар США" (false)
+    scaled_name: false                  # Имя валюты в виде: true => "1 доллар США", false => "Доллар США"
 ```
 
 

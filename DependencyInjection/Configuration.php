@@ -40,6 +40,13 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('url_exchange_rates_dynamic')
                                 ->defaultValue('http://www.nbrb.by/Services/XmlExRatesDyn.aspx')
                             ->end()
+                            ->integerNode('connect_timeout')
+                                ->min(0)->defaultValue(3)
+                            ->end()
+                            ->integerNode('timeout')
+                                ->min(0)->defaultValue(3)
+                            ->end()
+
                         ->end()
                     ->end()
 

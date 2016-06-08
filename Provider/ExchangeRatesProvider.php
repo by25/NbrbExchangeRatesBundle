@@ -5,32 +5,17 @@
 
 namespace Submarine\NbrbExchangeRatesBundle\Provider;
 
-use Doctrine\Common\Cache\Cache;
+use Submarine\NbrbExchangeRatesBundle\Client\ApiClient;
 use Submarine\NbrbExchangeRatesBundle\CurrencyRateDate;
+use Submarine\NbrbExchangeRatesBundle\Exception\UndefinedCurrencyException;
 use Submarine\NbrbExchangeRatesBundle\ExchangeRate;
 
 /**
  * Class ExchangeRatesProvider
  * @package Submarine\NbrbParserBundle
  */
-class ExchangeRatesProvider
+class ExchangeRatesProvider implements ExchangeRatesProviderInterface
 {
-    /**
-     * @var Cache
-     */
-    private $cacheProvider;
-
-    /**
-     * Включем кэш?
-     * @var bool
-     */
-    private $cacheEnabled = true;
-
-    /**
-     * Время жизни кэша, секунд
-     * @var int
-     */
-    private $cacheLifeTime = 10800;
 
     /**
      * Наименование валюты, содержащее номинал
@@ -50,116 +35,65 @@ class ExchangeRatesProvider
      */
     private $apiClient;
 
-
-    // ------------------ Config -----------------
-
     /**
+     * ExchangeRatesProvider constructor.
      * @param ApiClient $apiClient
+     * @param bool $showExceptions
+     * @param bool $scaledName
      */
-    public function setApiClient(ApiClient $apiClient)
+    public function __construct(ApiClient $apiClient, $showExceptions, $scaledName)
     {
         $this->apiClient = $apiClient;
-    }
-
-    /**
-     * @param Cache $cacheProvider
-     */
-    public function setCacheProvider(Cache $cacheProvider)
-    {
-        $this->cacheProvider = $cacheProvider;
-    }
-
-    /**
-     * @param boolean $cacheEnabled
-     */
-    public function setCacheEnabled($cacheEnabled)
-    {
-        $this->cacheEnabled = $cacheEnabled;
-    }
-
-    /**
-     * @param int $cacheLifeTime
-     */
-    public function setCacheLifeTime($cacheLifeTime)
-    {
-        $this->cacheLifeTime = $cacheLifeTime;
-    }
-
-    /**
-     * @param boolean $scaledName
-     */
-    public function setScaledName($scaledName)
-    {
+        $this->showExceptions = $showExceptions;
         $this->scaledName = $scaledName;
     }
 
-    /**
-     * @param boolean $showExceptions
-     */
-    public function setShowExceptions($showExceptions)
-    {
-        $this->showExceptions = $showExceptions;
-    }
-
-
-
-
-
-    // ------------------ API ---------------
 
     /**
      * Все курсы валют за указанную дату
-     * @param \DateTime $date Дата, по умолчанию текущая дата
+     *
+     * @param \DateTime $date Если null - текущая дата
+     *
      * @return ExchangeRate[]
      */
     public function getAllRatesExchanges(\DateTime $date = null)
     {
-        if (!$date) {
+        if ($date === null) {
             $date = new \DateTime();
         }
 
         try {
-            $cacheKey = 'submarine_nbrb_parser_rates_' . $date->format('dmy');
+            $body = $this->apiClient->getXmlExchangesRates($date, $this->scaledName);
+            $xml = simplexml_load_string($body);
 
-            if ($this->cacheEnabled) {
-                $result = $this->cacheProvider->fetch($cacheKey);
+            $result = [];
+
+            if (count($xml->Currency)) {
+                foreach ($xml->Currency as $item) {
+                    $exRate = new ExchangeRate($item, $date);
+                    $result[$exRate->getCharCode()] = $exRate;
+                }
             }
 
-            if (empty($result)) {
-
-                $xml = simplexml_load_string(
-                    $this->apiClient->getXmlExchangesRates($date, $this->scaledName)
-                );
-
-                $result = [];
-                if (count($xml->Currency)) {
-                    foreach ($xml->Currency as $item) {
-                        $exRate = new ExchangeRate($item, $date);
-                        $result[$exRate->getCharCode()] = $exRate;
-                    }
-                }
-
-                if ($this->cacheEnabled and $result) {
-                    $this->cacheProvider->save($cacheKey, $result, $this->cacheLifeTime);
-                }
-
-            }
+            return $result;
 
         } catch (\Exception $exc) {
             if ($this->showExceptions) {
                 throw new $exc;
             }
+
             return [];
         }
-
-        return $result;
     }
 
 
     /**
      * Курсы выбранных валют за указанную дату
+     *
      * @param array $codes Коды валют в формате ISO (USD, UAH)
      * @param \DateTime $date Дата, по умолчанию текущая дата
+     *
+     * @throws UndefinedCurrencyException
      * @return ExchangeRate[]
      */
     public function getRatesExchanges(array $codes, \DateTime $date = null)
@@ -169,6 +103,8 @@ class ExchangeRatesProvider
         foreach ($codes as $code) {
             if (isset($rates[$code])) {
                 $result[$code] = $rates[$code];
+            } elseif ($this->showExceptions) {
+                throw new UndefinedCurrencyException(sprintf('Undefined currency code: %s', $code));
             }
         }
 
@@ -178,14 +114,25 @@ class ExchangeRatesProvider
 
     /**
      * Курс валюты за указанную дату
+     *
      * @param string $code Код валюты в формате ISO (USD, UAH)
-     * @param \DateTime $date
+     * @param \DateTime $date Если null - текущая дата
+     *
+     * @throws UndefinedCurrencyException
      * @return ExchangeRate
      */
     public function getRateExchange($code, \DateTime $date = null)
     {
         $rates = $this->getAllRatesExchanges($date);
-        return isset($rates[$code]) ? $rates[$code] : new ExchangeRate();
+        if (isset($rates[$code])) {
+            return $rates[$code];
+        }
+
+        if ($this->showExceptions) {
+            throw new UndefinedCurrencyException(sprintf('Undefined currency code: %s', $code));
+        }
+
+        return new ExchangeRate();
     }
 
 
@@ -193,52 +140,44 @@ class ExchangeRatesProvider
      * @param string $code
      * @param \DateTime $firstDate
      * @param \DateTime $lastDate
-     * @return array|mixed
+     *
+     * @throws UndefinedCurrencyException
+     * @return CurrencyRateDate[]
      */
     public function getRatesExchangesDynamic($code, \DateTime $firstDate, \DateTime $lastDate)
     {
-
         $currency = $this->getRateExchange($code);
+
         if (!$currency->getId()) {
+
+            if ($this->showExceptions) {
+                throw new UndefinedCurrencyException(sprintf('Undefined currency id: %s', $code));
+            }
+
             return [];
         }
 
-        $cacheKey = md5('submarine_nbrb_parser_rates_' . $code . '_' . $firstDate->format('dmy') . '_' . $lastDate->format('dny'));
-
-        if ($this->cacheEnabled) {
-            $result = $this->cacheProvider->fetch($cacheKey);
-        }
-
         try {
-            if (empty($result)) {
+            $body = $this->apiClient->getXmlExchangesRatesDynamic($currency->getId(), $firstDate, $lastDate);
+            $xml = simplexml_load_string($body);
 
-                $xml = simplexml_load_string(
-                    $this->apiClient->getXmlExchangesRatesDynamic($currency->getId(), $firstDate, $lastDate)
-                );
-
-                $result = [];
-                if (count($xml->Record)) {
-                    foreach ($xml->Record as $item) {
-                        $rate = new CurrencyRateDate($item);
-                        $result[] = $rate;
-                    }
+            $result = [];
+            if (count($xml->Record)) {
+                foreach ($xml->Record as $item) {
+                    $rate = new CurrencyRateDate($item);
+                    $result[] = $rate;
                 }
-
-                if ($this->cacheEnabled and $result) {
-                    $this->cacheProvider->save($cacheKey, $result, $this->cacheLifeTime);
-                }
-
             }
+
+            return $result;
 
         } catch (\Exception $exc) {
             if ($this->showExceptions) {
                 throw new $exc;
             }
+
             return [];
         }
-
-        return $result;
-
     }
 
 }

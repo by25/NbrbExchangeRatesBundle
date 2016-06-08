@@ -52,6 +52,16 @@ class SubmarineNbrbExchangeRatesExtension extends Extension
             $config['source']['url_exchange_rates_dynamic']
         );
 
+        $container->setParameter(
+            'submarine_nbrb_exchange_rates.source.connect_timeout',
+            $config['source']['connect_timeout']
+        );
+
+        $container->setParameter(
+            'submarine_nbrb_exchange_rates.source.timeout',
+            $config['source']['timeout']
+        );
+
         // Other
         $container->setParameter(
             'submarine_nbrb_exchange_rates.exception',

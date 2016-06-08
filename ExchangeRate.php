@@ -58,7 +58,7 @@ class ExchangeRate
     {
         if (!is_null($xmlElement)) {
             $this->id = (int)$xmlElement->attributes()[0];
-            $this->numCode = (string)$xmlElement->NumCode;
+            $this->numCode = (int)$xmlElement->NumCode;
             $this->charCode = (string)$xmlElement->CharCode;
             $this->name = (string)($xmlElement->Name ? $xmlElement->Name : $xmlElement->QuotName);
             $this->scale = (int)$xmlElement->Scale;
