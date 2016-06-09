@@ -20,7 +20,7 @@ composer.json:
 ```json
 {
     "require": {
-        "submarine/nbrb-exchange-rates-bundle": "~0.1"
+        "submarine/nbrb-exchange-rates-bundle": "^0.2"
     }
 }
 ```
@@ -52,7 +52,7 @@ submarine_nbrb_exchange_rates:
         url_exchange_rates_dynamic: 'http://www.nbrb.by/Services/XmlExRatesDyn.aspx'
         connect_timeout: 3              # Ожидание подключения к сервису, сек (default: 3)
         timeout: 3                      # Ожидание ответа сервера, сек (default: 3)
-    exception: false                    # Выкидывать исключения?
+    exception: false                    # Выкидывать исключения? (default: false)
 ```
 
 
@@ -100,10 +100,12 @@ $container->get('nbrb_exchange_rates.provider')
 ### Кэширование
 
 Можно воспользоваться декоратором `CachedExchangeRateProvider` в своем приложении.
-Кэш-провайдер должен реализовывать интерефейс `Doctrine\Common\Cache\Cache`, смотрите `doctrine/cache`.
+Кэш-провайдер должен реализовывать интерефейс `Doctrine\Common\Cache\Cache` (смотрите `doctrine/cache`).
+
 Пример конфигурации `service.yml`:
 
 ```yaml
+services:
     my_nbrb_exchange_rates_cached:
         class: Submarine\NbrbExchangeRatesBundle\Provider\CachedExchangeRateProvider
         arguments:
