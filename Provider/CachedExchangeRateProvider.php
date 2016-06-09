@@ -46,7 +46,7 @@ class CachedExchangeRateProvider implements ExchangeRatesProviderInterface
      */
     public function getAllRatesExchanges(\DateTime $date = null)
     {
-        $cacheKey = 'submarine_nbrb_' . $date->format('dmy');
+        $cacheKey = 'submarine_nbrb_' . ($date !== null) ? $date->format('dmy') : 'now';
 
         $result = $this->cache->fetch($cacheKey);
         if ($result) {

@@ -5,7 +5,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="/vendor/autoload.php"
+         bootstrap="vendor/autoload.php"
          stopOnError="false"
          stopOnFailure="false"
          stopOnIncomplete="false"
@@ -16,14 +16,9 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="Default Test Suite">
             <directory>Tests</directory>
         </testsuite>
     </testsuites>
-
-    <php>
-        <server name="KERNEL_DIR" value="app/"/>
-    </php>
-
 
 </phpunit>

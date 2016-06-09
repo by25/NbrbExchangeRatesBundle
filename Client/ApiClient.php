@@ -125,6 +125,7 @@ class ApiClient
      */
     private function getResponseBody($url, $query)
     {
+        $options = [];
         $options['query'] = $query;
         $options['connect_timeout'] = $this->httpConnectTimeout;
         $options['timeout'] = $this->httpTimeout;

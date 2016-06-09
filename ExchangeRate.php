@@ -54,7 +54,7 @@ class ExchangeRate
      */
     private $date;
 
-    function __construct(\SimpleXMLElement $xmlElement = null, \DateTime $date = null)
+    public function __construct(\SimpleXMLElement $xmlElement = null, \DateTime $date = null)
     {
         if (!is_null($xmlElement)) {
             $this->id = (int)$xmlElement->attributes()[0];
