@@ -1,6 +1,10 @@
 Парсер официального курса валют НБРБ
 ====================================
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/by25/NbrbExchangeRatesBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/by25/NbrbExchangeRatesBundle/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/by25/NbrbExchangeRatesBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/by25/NbrbExchangeRatesBundle/build-status/master)
+
+
 Парсер официальных курсов валют Национального банка Республики Беларусь ([Источник данных](http://www.nbrb.by/statistics/Rates/XML/))
 
 Возможности:
@@ -102,7 +106,7 @@ $container->get('nbrb_exchange_rates.provider')
 Можно воспользоваться декоратором `CachedExchangeRateProvider` в своем приложении.
 Кэш-провайдер должен реализовывать интерефейс `Doctrine\Common\Cache\Cache` (смотрите `doctrine/cache`).
 
-Пример конфигурации `service.yml`:
+Пример конфигурации `services.yml`:
 
 ```yaml
 services:
