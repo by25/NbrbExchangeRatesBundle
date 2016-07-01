@@ -11,14 +11,17 @@ use Submarine\NbrbExchangeRatesBundle\Client\ApiClient;
 use Submarine\NbrbExchangeRatesBundle\Exception\UndefinedCurrencyException;
 use Submarine\NbrbExchangeRatesBundle\ExchangeRate;
 use Submarine\NbrbExchangeRatesBundle\Provider\ExchangeRatesProvider;
-use Submarine\NbrbExchangeRatesBundle\Tests\Client\ApiClientTest;
 
 class ExchangeRatesProviderTest extends TestCase
 {
 
+    const URL_RATES = 'http://www.nbrb.by/Services/XmlExRates.aspx';
+
+    const URL_RATES_DYNAMIC = 'http://www.nbrb.by/Services/XmlExRatesDyn.aspx';
+
     private function getProvider()
     {
-        $apiClient = new ApiClient(ApiClientTest::URL_RATES, ApiClientTest::URL_RATES_DYNAMIC, 3, 3);
+        $apiClient = new ApiClient(self::URL_RATES, self::URL_RATES_DYNAMIC, 3, 3);
         return new ExchangeRatesProvider($apiClient, true);
     }
 
