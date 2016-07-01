@@ -54,20 +54,39 @@ class ExchangeRate
      */
     private $date;
 
-    public function __construct(\SimpleXMLElement $xmlElement = null, \DateTime $date = null)
+    /**
+     * ExchangeRate constructor.
+     * @param int $id
+     * @param int $numCode
+     * @param string $charCode
+     * @param int $scale
+     * @param string $name
+     * @param float $rate
+     * @param \DateTime $date
+     */
+    public function __construct($id, $numCode, $charCode, $scale, $name, $rate, \DateTime $date)
     {
-        if (!is_null($xmlElement)) {
-            $this->id = (int)$xmlElement->attributes()[0];
-            $this->numCode = (int)$xmlElement->NumCode;
-            $this->charCode = (string)$xmlElement->CharCode;
-            $this->name = (string)($xmlElement->Name ? $xmlElement->Name : $xmlElement->QuotName);
-            $this->scale = (int)$xmlElement->Scale;
-            $this->rate = (float)$xmlElement->Rate;
-        }
+        $this->id = $id;
+        $this->numCode = $numCode;
+        $this->charCode = $charCode;
+        $this->scale = $scale;
+        $this->name = $name;
+        $this->rate = $rate;
+        $this->date = $date;
+    }
 
-        if ($date) {
-            $this->date = $date;
-        }
+
+    static public function createFromXML(\SimpleXMLElement $xmlElement = null, \DateTime $date)
+    {
+        return new ExchangeRate(
+            (int)$xmlElement->attributes()[0],
+            (int)$xmlElement->NumCode,
+            (string)$xmlElement->CharCode,
+            (int)$xmlElement->Scale,
+            (string)($xmlElement->Name ?: $xmlElement->QuotName),
+            (float)$xmlElement->Rate,
+            $date
+        );
     }
 
 

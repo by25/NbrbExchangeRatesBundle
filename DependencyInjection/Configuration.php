@@ -41,9 +41,7 @@ class Configuration implements ConfigurationInterface
 
                         ->end()
                     ->end()
-
                     ->booleanNode('exception')->defaultFalse()->end()
-
                 ->end();
 
         // Here you should define the parameters that are allowed to

@@ -24,7 +24,7 @@ composer.json:
 ```json
 {
     "require": {
-        "submarine/nbrb-exchange-rates-bundle": "^0.2"
+        "submarine/nbrb-exchange-rates-bundle": "^0.3"
     }
 }
 ```
@@ -34,8 +34,8 @@ composer.json:
 Регистрация бандла:
 
 ```php
-<?php
 // app/AppKernel.php
+
 public function registerBundles()
 {
     $bundles = array(

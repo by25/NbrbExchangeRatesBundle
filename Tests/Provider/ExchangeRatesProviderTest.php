@@ -6,13 +6,14 @@
 namespace Submarine\NbrbExchangeRatesBundle\Tests\Provider;
 
 
+use PHPUnit\Framework\TestCase;
 use Submarine\NbrbExchangeRatesBundle\Client\ApiClient;
 use Submarine\NbrbExchangeRatesBundle\Exception\UndefinedCurrencyException;
 use Submarine\NbrbExchangeRatesBundle\ExchangeRate;
 use Submarine\NbrbExchangeRatesBundle\Provider\ExchangeRatesProvider;
 use Submarine\NbrbExchangeRatesBundle\Tests\Client\ApiClientTest;
 
-class ExchangeRatesProviderTest extends \PHPUnit_Framework_TestCase
+class ExchangeRatesProviderTest extends TestCase
 {
 
     private function getProvider()
@@ -94,6 +95,18 @@ class ExchangeRatesProviderTest extends \PHPUnit_Framework_TestCase
     }
 
 
+    public function testDenominationGetRateExchanges()
+    {
+        $provider = $this->getProvider();
+
+        $date = new \DateTime();
+        $date->setDate(2016, 7, 1);
+        $rate = $provider->getRateExchange('USD', $date);
+        $this->assertEquals($rate->getRate(), 2.0053);
+
+    }
+
+
     public function testGetRateExchange()
     {
         $provider = $this->getProvider();
@@ -130,7 +143,7 @@ class ExchangeRatesProviderTest extends \PHPUnit_Framework_TestCase
             $date = $rate->getDate()->format('m/d/Y');
 
             $this->assertTrue(isset($this->dynamicRates[$code][$date]));
-            $this->assertTrue($rate->getRate() == $this->dynamicRates[$code][$date]);
+            $this->assertEquals($rate->getRate(), $this->dynamicRates[$code][$date]);
         }
 
 
@@ -139,12 +152,12 @@ class ExchangeRatesProviderTest extends \PHPUnit_Framework_TestCase
 
     private function assertRate(ExchangeRate $rate, \DateTime $date, $value)
     {
-        $this->assertTrue($rate->getNumCode() === $value['num_code']);
-        $this->assertTrue($rate->getScale() === $value['scale']);
-        $this->assertTrue($rate->getName() === $value['name']);
-        $this->assertTrue($rate->getRate() == $value['rate']);
-        $this->assertTrue($rate->getCharCode() === $value['code']);
-        $this->assertTrue($rate->getDate()->format('dmy') === $date->format('dmy'));
+        $this->assertEquals($rate->getNumCode(), $value['num_code']);
+        $this->assertEquals($rate->getScale(), $value['scale']);
+        $this->assertEquals($rate->getName(), $value['name']);
+        $this->assertEquals($rate->getRate(), $value['rate']);
+        $this->assertEquals($rate->getCharCode(), $value['code']);
+        $this->assertEquals($rate->getDate()->format('dmy'), $date->format('dmy'));
     }
 
 }

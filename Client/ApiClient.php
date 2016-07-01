@@ -80,6 +80,8 @@ class ApiClient
      * @param bool $quotName
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function getXmlExchangesRates(\DateTime $date, $quotName = false)
     {
@@ -104,6 +106,8 @@ class ApiClient
      * @param \DateTime $lastDate
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function getXmlExchangesRatesDynamic($currencyId, \DateTime $firstDate, \DateTime $lastDate)
     {
@@ -122,6 +126,8 @@ class ApiClient
      * @param $url
      * @param $query
      * @return string
+     *
+     * @throws \Exception
      */
     private function getResponseBody($url, $query)
     {

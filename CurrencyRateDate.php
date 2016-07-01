@@ -18,19 +18,30 @@ class CurrencyRateDate
      */
     private $rate;
 
-
-    public function __construct(\SimpleXMLElement $xmlElement = null)
+    /**
+     * CurrencyRateDate constructor.
+     * @param \DateTime $date
+     * @param float $rate
+     */
+    public function __construct(\DateTime $date, $rate)
     {
-        $this->rate = (float)$xmlElement->Rate;
+        $this->date = $date;
+        $this->rate = $rate;
+    }
 
-        $date = explode('/', (string)$xmlElement->attributes()[0]);
-        if (count($date) == 3) {
+
+    static public function createFromXML(\SimpleXMLElement $xmlElement = null)
+    {
+        $dateArray = explode('/', (string)$xmlElement->attributes()[0]);
+        if (count($dateArray) === 3) {
             $dateTime = new \DateTime();
-            $dateTime->setDate($date[2], $date[0], $date[1]);
+            $dateTime->setDate($dateArray[2], $dateArray[0], $dateArray[1]);
             $dateTime->setTime(0, 0, 0);
 
-            $this->date = $dateTime;
+            return new CurrencyRateDate($dateTime, (float)$xmlElement->Rate);
         }
+
+        return new CurrencyRateDate(new \DateTime(), null);
     }
 
 

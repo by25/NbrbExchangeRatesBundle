@@ -63,7 +63,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
 
             if (count($xml->Currency)) {
                 foreach ($xml->Currency as $item) {
-                    $exRate = new ExchangeRate($item, $date);
+                    $exRate = ExchangeRate::createFromXML($item, $date);
                     $result[$exRate->getCharCode()] = $exRate;
                 }
             }
@@ -94,7 +94,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
         $rates = $this->getAllRatesExchanges($date);
         $result = [];
         foreach ($codes as $code) {
-            if (isset($rates[$code])) {
+            if (array_key_exists($code, $rates)) {
                 $result[$code] = $rates[$code];
             } elseif ($this->showExceptions) {
                 throw new UndefinedCurrencyException(sprintf('Undefined currency code: %s', $code));
@@ -117,7 +117,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
     public function getRateExchange($code, \DateTime $date = null)
     {
         $rates = $this->getAllRatesExchanges($date);
-        if (isset($rates[$code])) {
+        if (array_key_exists($code, $rates)) {
             return $rates[$code];
         }
 
@@ -125,7 +125,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
             throw new UndefinedCurrencyException(sprintf('Undefined currency code: %s', $code));
         }
 
-        return new ExchangeRate();
+        return new ExchangeRate(null, null, null, null, null, null, new \DateTime());
     }
 
 
@@ -157,7 +157,7 @@ class ExchangeRatesProvider implements ExchangeRatesProviderInterface
             $result = [];
             if (count($xml->Record)) {
                 foreach ($xml->Record as $item) {
-                    $rate = new CurrencyRateDate($item);
+                    $rate = CurrencyRateDate::createFromXML($item);
                     $result[] = $rate;
                 }
             }

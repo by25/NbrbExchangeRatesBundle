@@ -27,6 +27,7 @@ class CachedExchangeRateProvider implements ExchangeRatesProviderInterface
      */
     private $lifetime;
 
+
     /**
      * CachedExchangeRateProvider constructor.
      * @param ExchangeRatesProviderInterface $provider
@@ -46,7 +47,7 @@ class CachedExchangeRateProvider implements ExchangeRatesProviderInterface
      */
     public function getAllRatesExchanges(\DateTime $date = null)
     {
-        $cacheKey = 'submarine_nbrb_' . ($date !== null) ? $date->format('dmy') : 'now';
+        $cacheKey = $this->createCacheKey('submarine_nbrb', $date);
 
         $result = $this->cache->fetch($cacheKey);
         if ($result) {
@@ -63,7 +64,16 @@ class CachedExchangeRateProvider implements ExchangeRatesProviderInterface
      */
     public function getRatesExchanges(array $codes, \DateTime $date = null)
     {
-        return $this->provider->getRatesExchanges($codes, $date);
+        $cacheKey = $this->createCacheKey('submarine_nbrb_' . implode('', $codes), $date);
+
+        $result = $this->cache->fetch($cacheKey);
+        if ($result) {
+            return $result;
+        }
+
+        $result = $this->provider->getRatesExchanges($codes, $date);
+        $this->cache->save($cacheKey, $result, $this->lifetime);
+        return $result;
     }
 
     /**
@@ -71,7 +81,16 @@ class CachedExchangeRateProvider implements ExchangeRatesProviderInterface
      */
     public function getRateExchange($code, \DateTime $date = null)
     {
-        return $this->provider->getRateExchange($code, $date);
+        $cacheKey = $this->createCacheKey('submarine_nbrb_' . $code, $date);
+
+        $result = $this->cache->fetch($cacheKey);
+        if ($result) {
+            return $result;
+        }
+
+        $result = $this->provider->getRateExchange($code, $date);
+        $this->cache->save($cacheKey, $result, $this->lifetime);
+        return $result;
     }
 
     /**
@@ -89,6 +108,20 @@ class CachedExchangeRateProvider implements ExchangeRatesProviderInterface
         $result = $this->provider->getRatesExchangesDynamic($code, $firstDate, $lastDate);
         $this->cache->save($cacheKey, $result, $this->lifetime);
         return $result;
+    }
+
+
+    /**
+     * Ключ массива
+     *
+     * @param $name
+     * @param \DateTime|null $date
+     * @return string
+     */
+    private function createCacheKey($name, \DateTime $date = null)
+    {
+        $dateKey = ($date === null) ? date('dmy') : $date->format('dmy');
+        return $name . '_' . $dateKey;
     }
 
 
