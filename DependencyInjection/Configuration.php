@@ -17,10 +17,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('submarine_nbrb_exchange_rates');
+        $treeBuilder = new TreeBuilder('submarine_nbrb_exchange_rates');
 
-        $rootNode
+        $treeBuilder->getRootNode()
                 ->addDefaultsIfNotSet()
                 ->children()
                     ->arrayNode('source')
